@@ -27,8 +27,5 @@ public static class Enums
         Multiplier3X
     }
 
-    public static object GetRandomValue(int begin, Array someEnum)
-    {
-        return someEnum.GetValue(UnityEngine.Random.Range(begin, someEnum.Length));
-    }
+  
 }

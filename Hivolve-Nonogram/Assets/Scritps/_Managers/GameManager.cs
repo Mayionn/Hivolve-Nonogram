@@ -25,7 +25,7 @@ public class GameManager : Singleton<GameManager>
         screenX = Screen.GetComponent<RectTransform>().sizeDelta.x;
         screenY = Screen.GetComponent<RectTransform>().sizeDelta.y;
 
-        //Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+        Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
 
         CreateGrid(Properties);
         DisplayGrid();
@@ -37,7 +37,7 @@ public class GameManager : Singleton<GameManager>
     public void Button_TestMapGeneration()
     {
         DestroyGrid();
-        //Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+        Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
         CreateGrid(Properties);
         DisplayGrid();
         SetAllLinesImage();
@@ -187,22 +187,22 @@ public class GameManager : Singleton<GameManager>
     {
         if (GameManager.Instance.Game.CheckRows(y))
         {
-            GameManager.Instance._rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].LineCompleted;
+            GameManager.Instance._rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.LineCompleted;
         }
         else
         {
-            GameManager.Instance._rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Line;
+            GameManager.Instance._rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Line;
         }
     }
     private static void SetColumnImage(int x)
     {
         if (GameManager.Instance.Game.CheckColumns(x))
         {
-            GameManager.Instance._columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].LineCompleted;
+            GameManager.Instance._columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.LineCompleted;
         }
         else
         {
-            GameManager.Instance._columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Line;
+            GameManager.Instance._columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Line;
         }
     }
     private static void SetButtonImage(GameObject Button, Vector2 position)
@@ -210,27 +210,27 @@ public class GameManager : Singleton<GameManager>
         switch (GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].Type)
         {
             case SquareType.Blank:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Blank;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Blank;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.BlackHole:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].BlackHole;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.BlackHole;
                 SetNoMultiplier(Button);
                 break;
             case SquareType.OnePoint:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].OnePoint;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.OnePoint;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.TwoPoint:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].TwoPoint;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.TwoPoint;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.Multiplier2X:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Multiplier2X;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Multiplier2X;
                 SetNoMultiplier(Button);
                 break;
             case SquareType.Multiplier3X:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Multiplier3X;
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Multiplier3X;
                 SetNoMultiplier(Button);
                 break;
             default:
