@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static Enums;
@@ -21,11 +23,10 @@ public class GameManager : Singleton<GameManager>
     {
         AssetsManager.Instance.Init();
 
-
         screenX = Screen.GetComponent<RectTransform>().sizeDelta.x;
         screenY = Screen.GetComponent<RectTransform>().sizeDelta.y;
 
-        Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+        //Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
 
         CreateGrid(Properties);
         DisplayGrid();
@@ -81,50 +82,60 @@ public class GameManager : Singleton<GameManager>
     {
         //Sets the size of the sprite based on the size of the screen
         float size = screenX / (Game.Squares.GetLength(0) + 1);
-        float offSetY = screenY / 4;
+        float offSetY = screenY / 5;
+
+        GameObject column = AssetsManager.Instance.Line;
+        GameObject button = AssetsManager.Instance.Button;
+        GameObject row = AssetsManager.Instance.Line;
+
+        Transform columns = Screen.transform.Find("__Columns");
+        Transform buttons = Screen.transform.Find("__Buttons");
+        Transform rows = Screen.transform.Find("__Rows");
 
         //Goes through all the squares and creates a grid of buttons
         for (int x = 0; x < Game.Squares.GetLength(0); x++)
         {
-            GameObject column = AssetsManager.Instance.Line;
+            //----- ALL COLUMNS
             _columns[x] = Instantiate(column, Vector2.zero, Quaternion.identity, Screen.transform);
             //Change Line Properties
             _columns[x].transform.name = "Columns" + x + ": " + Game.Objective_Columns[x];
+            _columns[x].transform.SetParent(columns);
             _columns[x].GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
-            _columns[x].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * (x+1) + (size / 2), size * Game.Squares.GetLength(1) + (size / 2) + offSetY);
+            _columns[x].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * (x + 1) + (size / 2), size * Game.Squares.GetLength(1) + (size / 2) + offSetY);
             //Change Image and Number of the objective score
-            _columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Line;
+            _columns[x].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Line;
             _columns[x].transform.Find("Text").GetComponent<Text>().text = Game.Objective_Columns[x].ToString();
-
 
             for (int y = 0; y < Game.Squares.GetLength(1); y++)
             {
-                //Get Button Prefab
-                GameObject button = AssetsManager.Instance.Button;
-                //Instantiate Square
+                //----- ALL SQUARES
                 _buttonGrid[x, y] = Instantiate(button, Vector2.zero, Quaternion.identity, Screen.transform);
                 //Change Button Properties
-                _buttonGrid[x, y].transform.name = "Square" + x + y;
-                _buttonGrid[x, y].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * (x+1) + (size / 2), size * y + (size / 2) + offSetY);
+                _buttonGrid[x, y].transform.name = "Square: " + x + y;
+                _buttonGrid[x, y].transform.SetParent(buttons);
+                _buttonGrid[x, y].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * (x + 1) + (size / 2), size * y + (size / 2) + offSetY);
                 _buttonGrid[x, y].GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
                 _buttonGrid[x, y].GetComponent<SquarePosition>().SetPosition(x, y);
                 //Display correctSprite
                 SetButtonImage(_buttonGrid[x, y], new Vector2(x, y));
 
-                if(x == 0)
+                if (x == 0)
                 {
-                    GameObject row = AssetsManager.Instance.Line;
+                    //----- ALL ROWS
                     _rows[y] = Instantiate(row, Vector2.zero, Quaternion.identity, Screen.transform);
                     //Change Line Properties
                     _rows[y].transform.name = "Row" + y + ": " + Game.Objective_Rows[y];
+                    _rows[y].transform.SetParent(rows);
                     _rows[y].GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
                     _rows[y].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * x + (size / 2), size * y + (size / 2) + offSetY);
                     //Change Image and Number of the objective score
-                    _rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].Line;
+                    _rows[y].GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Line;
                     _rows[y].transform.Find("Text").GetComponent<Text>().text = Game.Objective_Rows[y].ToString();
                 }
             }
         }
+
+        Screen.transform.Find("Background").GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Background;
     }
     private void DestroyGrid()
     {
@@ -161,26 +172,39 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-
-    private static void CheckGameCompleted()
+    private void CheckGameCompleted()
     {
         if (GameManager.Instance.Game.IsGameComplete())
         {
             AudioManager.Instance.Play("GameComplete");
             Debug.Log("Won");
-        }
-    }
-    private static void CheckMultiplier(GameObject Button, Vector2 position)
-    {
-        if (GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].Multiplier > 1)
-        {
-            Button.transform.Find("Image").GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].MultiplierOverlay;
-            Button.transform.Find("Image").GetComponent<Image>().color = new Vector4(1, 1, 1, 0.5f);
-            Button.transform.Find("Text").GetComponent<Text>().text = GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].Multiplier + "X";
-        }
-        else
-        {
-            SetNoMultiplier(Button);
+
+            //---- GET ALL POINT LOCATIONS
+            List<Star> positions = GameManager.Instance.Game.GetPointsLocation();
+            GameObject[] starLines = new GameObject[positions.Count];
+
+            Transform parent = GameManager.Instance.Screen.transform.Find("__StarLines");
+
+            //---- CREATE LINE RENDERERS
+            for (int i = 0; i < positions.Count; i++)
+            {
+                //----- Get example and Instantiate
+                starLines[i] = Instantiate(AssetsManager.Instance.StarLine);
+                starLines[i].transform.SetParent(parent);
+
+                //----- Get Positions ---- REWORK
+                Vector2 position1 = GameManager.Instance._buttonGrid[(int)positions[0].Position.x, (int)positions[0].Position.y].GetComponent<RectTransform>().anchoredPosition;
+                Vector2 position2 = GameManager.Instance._buttonGrid[(int)positions[1].Position.x, (int)positions[1].Position.y].GetComponent<RectTransform>().anchoredPosition;
+                Debug.Log(GameManager.Instance._buttonGrid[(int)positions[0].Position.x, (int)positions[0].Position.y].transform.position);
+                Debug.Log(GameManager.Instance._buttonGrid[(int)positions[1].Position.x, (int)positions[1].Position.y].transform.position);
+
+                //----- Set line in the middle
+                starLines[i].GetComponent<RectTransform>().anchoredPosition = position1 + (position2 - position1) / 2;
+
+                //----- Set line size
+                starLines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(5, Vector2.Distance(position1, position2));
+            }
+
         }
     }
     private static void SetRowImage(int y)
@@ -225,16 +249,26 @@ public class GameManager : Singleton<GameManager>
                 Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.TwoPoint;
                 CheckMultiplier(Button, position);
                 break;
-            case SquareType.Multiplier2X:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Multiplier2X;
-                SetNoMultiplier(Button);
-                break;
-            case SquareType.Multiplier3X:
-                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Multiplier3X;
+            case SquareType.Multiplier:
+                Button.GetComponent<Image>().sprite = AssetsManager.Instance.ActiveSkin.Multiplier;
+                Button.transform.Find("MultiplierText").GetComponent<Text>().text = GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].BaseMultiplier + "X";
                 SetNoMultiplier(Button);
                 break;
             default:
                 break;
+        }
+    }
+    private static void CheckMultiplier(GameObject Button, Vector2 position)
+    {
+        if (GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].Multiplier > 1)
+        {
+            Button.transform.Find("Image").GetComponent<Image>().sprite = AssetsManager.Instance.Skins[0].MultiplierOverlay;
+            Button.transform.Find("Image").GetComponent<Image>().color = new Vector4(1, 1, 1, 1);
+            Button.transform.Find("Text").GetComponent<Text>().text = GameManager.Instance.Game.Squares[(int)position.x, (int)position.y].Multiplier + "X";
+        }
+        else
+        {
+            SetNoMultiplier(Button);
         }
     }
     private static void SetNoMultiplier(GameObject Button)

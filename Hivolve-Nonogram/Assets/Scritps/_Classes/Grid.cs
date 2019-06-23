@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Enums;
@@ -12,8 +13,8 @@ public class Grid
 
     private int _sizeX;
     private int _sizeY;
-    private Vector2[] _2XmultipliersPosition;
-    private Vector2[] _3XmultipliersPosition;
+
+    private Vector2[] _multipliersPosition;
 
     public Grid(GameProperties properties)
     {
@@ -28,8 +29,7 @@ public class Grid
         //Generates Random Map
         GeneretateMap(properties);
         //Set Multipliers
-        SetMultipliers(_2XmultipliersPosition, 2);
-        SetMultipliers(_3XmultipliersPosition, 3);
+        SetMultipliers(_multipliersPosition);
         //Calculate Objectives
         Objective_Columns = CalculateColumns();
         Objective_Rows = CalculateRows();
@@ -94,19 +94,19 @@ public class Grid
     {
         float maxSquares = properties.SizeY * properties.SizeX;
 
-        GenerateSquares(properties, SquareType.BlackHole, GetAmount(maxSquares, (int)properties.BlackHoles));
-        GenerateSquares(properties, SquareType.OnePoint, GetAmount(maxSquares, (int)properties.OnePointers));
-        GenerateSquares(properties, SquareType.TwoPoint, GetAmount(maxSquares, (int)properties.TwoPointers));
+        GenerateSquares(properties,SquareType.BlackHole, GetAmount(maxSquares, (int)properties.BlackHoles),0);
+        GenerateSquares(properties, SquareType.OnePoint, GetAmount(maxSquares, (int)properties.OnePointers),0);
+        GenerateSquares(properties, SquareType.TwoPoint, GetAmount(maxSquares, (int)properties.TwoPointers),0);
 
         if ((int)properties.Multipliers2X > 0)
         {
-            _2XmultipliersPosition = new Vector2[(int)properties.Multipliers2X];
-            GenerateSquares(properties, SquareType.Multiplier2X, (int)properties.Multipliers2X);
+            _multipliersPosition = new Vector2[(int)properties.Multipliers2X];
+            GenerateSquares(properties, SquareType.Multiplier, (int)properties.Multipliers2X, 2);
         }
         if ((int)properties.Multipliers3X > 0)
         {
-            _3XmultipliersPosition = new Vector2[(int)properties.Multipliers3X];
-            GenerateSquares(properties, SquareType.Multiplier3X, (int)properties.Multipliers3X);
+            _multipliersPosition = new Vector2[(int)properties.Multipliers3X];
+            GenerateSquares(properties, SquareType.Multiplier, (int)properties.Multipliers3X, 3);
         }
     }
     /// <summary>
@@ -129,7 +129,7 @@ public class Grid
             case SquareType.TwoPoint:
                 Squares[positionX, positionY].SetType(SquareType.Blank);
                 break;
-            case SquareType.Multiplier2X:
+            case SquareType.Multiplier:
                 break;
             default:
                 break;
@@ -171,7 +171,32 @@ public class Grid
             }
         }
     }
-    
+
+    public List<Star> GetPointsLocation()
+    {
+        List<Star> positions = new List<Star>();
+
+        for (int x = 0; x < _sizeX; x++)
+        {
+            for (int y = 0; y < _sizeY; y++)
+            {
+                if(Squares[x,y].Type == SquareType.OnePoint
+                    || Squares[x,y].Type == SquareType.TwoPoint)
+                {
+                    Star star;
+
+                    star.ConnectionsCount = 0;
+                    star.Position = new Vector2(x, y);
+
+                    positions.Add(star);
+                }
+            }
+        }
+
+        return positions;
+    }
+
+
     /// <summary>
     /// Gets the amount of squares per density
     /// </summary>
@@ -194,17 +219,15 @@ public class Grid
         switch (square.Type)
         {
             case SquareType.Blank:
-                return 0 * square.Multiplier;
+                return 0;
             case SquareType.BlackHole:
-                return 0 * square.Multiplier;
+                return 0;
             case SquareType.OnePoint:
                 return 1 * square.Multiplier;
             case SquareType.TwoPoint:
                 return 2 * square.Multiplier;
-            case SquareType.Multiplier2X:
-                return 0 * square.Multiplier;
-            case SquareType.Multiplier3X:
-                return 0 * square.Multiplier;
+            case SquareType.Multiplier:
+                return 0;
             default:
                 Debug.Log("No square type selected");
                 return 0;
@@ -250,14 +273,16 @@ public class Grid
         return total;
     }
     /// <summary>
-    /// Goes through multiplier locations and sets Square0s Multipliers
+    /// Goes through multiplier locations and sets Squares Multipliers
     /// </summary>
-    private void SetMultipliers(Vector2[] positions, int multiplier)
+    private void SetMultipliers(Vector2[] positions)
     {
         if (positions != null)
         {
             for (int i = 0; i < positions.Length; i++)
             {
+                int multiplier = Squares[(int)positions[i].x, (int)positions[i].y].BaseMultiplier;
+
                 for (int x = 0; x < _sizeX; x++)
                 {
                     if (Squares[x, (int)positions[i].y].Multiplier > 1)
@@ -291,7 +316,7 @@ public class Grid
     /// <param name="properties"></param>
     /// <param name="type"></param>
     /// <param name="totalAmount"></param>
-    private void GenerateSquares(GameProperties properties, SquareType type, int totalAmount)
+    private void GenerateSquares(GameProperties properties, SquareType type, int totalAmount, int baseMultiplier)
     {
         for (int i = 0; i < totalAmount; i++)
         {
@@ -344,36 +369,19 @@ public class Grid
                             break;
                     }
                     break;
-                case SquareType.Multiplier2X:
+                case SquareType.Multiplier:
                     switch (Squares[x, y].Type)
                     {
                         case SquareType.BlackHole:
                             i--;
                             break;
-                        case SquareType.Multiplier2X:
+                        case SquareType.Multiplier:
                             i--;
                             break;
                         default:
                             SetSquareType(x, y, type);
-                            _2XmultipliersPosition[i] = new Vector2(x, y);
-                            break;
-                    }
-                    break;
-                case SquareType.Multiplier3X:
-                    switch (Squares[x, y].Type)
-                    {
-                        case SquareType.BlackHole:
-                            i--;
-                            break;
-                        case SquareType.Multiplier2X:
-                            i--;
-                            break;
-                        case SquareType.Multiplier3X:
-                            i--;
-                            break;
-                        default:
-                            SetSquareType(x, y, type);
-                            _3XmultipliersPosition[i] = new Vector2(x, y);
+                            SetSquareBaseMultiplier(x, y, baseMultiplier);
+                            _multipliersPosition[i] = new Vector2(x, y);
                             break;
                     }
                     break;
@@ -391,6 +399,16 @@ public class Grid
     private void SetSquareType(int positionX, int positionY, SquareType type)
     {
         Squares[positionX, positionY].SetType(type);
+    }
+    /// <summary>
+    /// Sets Square's BaseMultiplier
+    /// </summary>
+    /// <param name="positionX"></param>
+    /// <param name="positionY"></param>
+    /// <param name="baseMultiplier"></param>
+    private void SetSquareBaseMultiplier(int positionX, int positionY, int baseMultiplier)
+    {
+        Squares[positionX, positionY].SetBaseMultiplier(baseMultiplier);
     }
     /// <summary>
     /// Sets square's multiplier

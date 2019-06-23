@@ -8,12 +8,14 @@ using static Structs;
 public class AssetsManager : Singleton<AssetsManager>
 {
     public List<Skin> Skins;
-    public Skin ActiveSkin;
+    [HideInInspector] public Skin ActiveSkin;
+
     public GameObject Button;
     public GameObject Line;
+    public GameObject StarLine;
 
-    private int spritesheetX_Count = 3;
-    private int spritesheetY_Count = 3;
+    private int spritesheetX_Count = 4;
+    private int spritesheetY_Count = 4;
 
     public void Init()
     {
@@ -21,16 +23,15 @@ public class AssetsManager : Singleton<AssetsManager>
         {
             Skin skin = new Skin();
 
-            skin.BlackHole         = GetSprite(Skins[i].Spritesheet, 0, 2);
-            skin.Blank             = GetSprite(Skins[i].Spritesheet, 1, 2);
-            skin.Line              = GetSprite(Skins[i].Spritesheet, 2, 2);
-            skin.LineCompleted     = GetSprite(Skins[i].Spritesheet, 0, 1);
-            skin.Multiplier2X      = GetSprite(Skins[i].Spritesheet, 1, 1);
-            skin.Multiplier3X      = GetSprite(Skins[i].Spritesheet, 2, 1);
-            skin.OnePoint          = GetSprite(Skins[i].Spritesheet, 0, 0);
-            skin.TwoPoint          = GetSprite(Skins[i].Spritesheet, 1, 0);
-            skin.MultiplierOverlay = GetSprite(Skins[i].Spritesheet, 2, 0);
-
+            skin.Blank             = GetSprite(Skins[i].Spritesheet, 0, 3);
+            skin.OnePoint          = GetSprite(Skins[i].Spritesheet, 1, 3);
+            skin.TwoPoint          = GetSprite(Skins[i].Spritesheet, 2, 3);
+            skin.BlackHole         = GetSprite(Skins[i].Spritesheet, 3, 3);
+            skin.Line              = GetSprite(Skins[i].Spritesheet, 0, 2);
+            skin.LineCompleted     = GetSprite(Skins[i].Spritesheet, 1, 2);
+            skin.Multiplier        = GetSprite(Skins[i].Spritesheet, 2, 2);
+            skin.MultiplierOverlay = GetSprite(Skins[i].Spritesheet, 3, 2);
+            skin.Background = Skins[i].Background;
             Skins[i] = skin;
         }
 

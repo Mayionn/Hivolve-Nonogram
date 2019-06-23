@@ -20,9 +20,6 @@ public class PropertiesManager : Singleton<PropertiesManager>
         return gp;
     }
 
-
-
-
     public static object GetRandomValue(int begin, Array someEnum)
     {
         return someEnum.GetValue(UnityEngine.Random.Range(begin, someEnum.Length));

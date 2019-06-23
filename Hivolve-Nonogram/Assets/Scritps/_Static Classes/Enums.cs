@@ -23,8 +23,7 @@ public static class Enums
         BlackHole,
         OnePoint,
         TwoPoint,
-        Multiplier2X,
-        Multiplier3X
+        Multiplier
     }
 
   
