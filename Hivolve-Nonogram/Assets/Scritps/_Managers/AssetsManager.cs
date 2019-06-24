@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Structs;
 
-public class AssetsManager : Singleton<AssetsManager>
+public class AssetsManager : MonoBehaviour
 {
     public List<Skin> Skins;
     [HideInInspector] public Skin ActiveSkin;
@@ -23,6 +23,7 @@ public class AssetsManager : Singleton<AssetsManager>
         {
             Skin skin = new Skin();
 
+            skin.Spritesheet = Skins[i].Spritesheet;
             skin.Blank             = GetSprite(Skins[i].Spritesheet, 0, 3);
             skin.OnePoint          = GetSprite(Skins[i].Spritesheet, 1, 3);
             skin.TwoPoint          = GetSprite(Skins[i].Spritesheet, 2, 3);

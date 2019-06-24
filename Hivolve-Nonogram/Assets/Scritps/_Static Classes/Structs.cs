@@ -23,12 +23,6 @@ public static class Structs
         public Count Count;
     }
 
-    public struct Star
-    {
-        public int ConnectionsCount;
-        public Vector2 Position;
-    }
-
     //----- SKINS
     [Serializable]
     public struct Skin

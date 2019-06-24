@@ -354,9 +354,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3709767191570661267, guid: 70ac213a29cae04498d3fcd323cb71d1,
+      - m_Target: {fileID: 8688265251231344666, guid: 70ac213a29cae04498d3fcd323cb71d1,
           type: 3}
-        m_MethodName: InteractSquare
+        m_MethodName: Button_Interaction
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 7180128575168653873}

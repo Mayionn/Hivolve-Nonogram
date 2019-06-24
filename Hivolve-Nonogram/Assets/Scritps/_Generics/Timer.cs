@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Timer : Singleton<Timer>
+public class Timer : MonoBehaviour
 {
     public float BeginTime;
     public Text Text;

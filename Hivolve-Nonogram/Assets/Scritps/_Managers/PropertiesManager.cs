@@ -2,7 +2,7 @@
 using static Enums;
 using static Structs;
 
-public class PropertiesManager : Singleton<PropertiesManager>
+public class PropertiesManager
 {
     public GameProperties GetRandomGameProperties(int size)
     {
