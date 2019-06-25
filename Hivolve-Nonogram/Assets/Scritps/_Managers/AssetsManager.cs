@@ -5,10 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Structs;
 
-public class AssetsManager : MonoBehaviour
+public class AssetsManager : Singleton<AssetsManager>
 {
     public List<Skin> Skins;
-    [HideInInspector] public Skin ActiveSkin;
 
     public GameObject Button;
     public GameObject Line;
@@ -36,7 +35,7 @@ public class AssetsManager : MonoBehaviour
             Skins[i] = skin;
         }
 
-        ActiveSkin = Skins[0];
+        ProfileManager.Instance.SetSkin(Skins[0]);
     }
 
     private Sprite GetSprite(Texture2D spritesheet, int posX, int posY)

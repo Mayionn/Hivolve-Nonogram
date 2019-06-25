@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class AudioManager : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>
 {
     public Sound[] sounds;
 

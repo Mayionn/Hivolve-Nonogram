@@ -8,7 +8,7 @@ using static Structs;
 
 public class GameManager : Singleton<GameManager>
 {
-    private GameGrid Game;
+    public GameGrid Game;
     public Canvas Screen;
     public GameProperties Properties;
 
@@ -19,20 +19,25 @@ public class GameManager : Singleton<GameManager>
     private GameObject[] _columns;
     private GameObject[] _starLines;
 
-    public PropertiesManager PropertiesManager;
-    public AudioManager AudioManager;
-    public AssetsManager AssetsManager;
-
     void Start()
     {
-        PropertiesManager = new PropertiesManager();
-
-        AssetsManager.Init();
+        AssetsManager.Instance.Init();
 
         screenX = Screen.GetComponent<RectTransform>().sizeDelta.x;
         screenY = Screen.GetComponent<RectTransform>().sizeDelta.y;
 
-        Properties = PropertiesManager.GetRandomGameProperties(5);
+        switch (PropertiesManager.Instance.GameMode)
+        {
+            case GameMode.Singleplayer:
+                break;
+            case GameMode.Endless:
+                Properties = PropertiesManager.Instance.CustomProperties;
+                break;
+            case GameMode.TimeAttack:
+                break;
+            default:
+                break;
+        }
 
         InitGrid();
         InstantiateGrid();
@@ -41,7 +46,7 @@ public class GameManager : Singleton<GameManager>
     public void Button_TestMapGeneration()
     {
         DestroyGrid();
-        Properties = PropertiesManager.GetRandomGameProperties(5);
+        Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
 
         InitGrid();
         InstantiateGrid();
@@ -69,7 +74,7 @@ public class GameManager : Singleton<GameManager>
     private void SquareInteraction(GameObject button)
     {
         //----- Play interaction audio
-        AudioManager.Play("Click");
+        AudioManager.Instance.Play("Click");
 
         //----- Gets position on tile
         Vector2 pos = button.GetComponent<SquarePosition>().Position;
@@ -104,9 +109,9 @@ public class GameManager : Singleton<GameManager>
         float size = screenX / (Game.Squares.GetLength(0) + 1);
         float offSetY = screenY / 5;
 
-        GameObject column = AssetsManager.Line;
-        GameObject button = AssetsManager.Button;
-        GameObject row = AssetsManager.Line;
+        GameObject column = AssetsManager.Instance.Line;
+        GameObject button = AssetsManager.Instance.Button;
+        GameObject row = AssetsManager.Instance.Line;
 
         Transform columns = Screen.transform.Find("__Columns");
         Transform buttons = Screen.transform.Find("__Buttons");
@@ -123,7 +128,7 @@ public class GameManager : Singleton<GameManager>
             _columns[x].GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
             _columns[x].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * (x + 1) + (size / 2), size * Game.Squares.GetLength(1) + (size / 2) + offSetY);
             //Change Image and Number of the objective score
-            _columns[x].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Line;
+            _columns[x].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Line;
             _columns[x].transform.Find("Text").GetComponent<Text>().text = Game.Objective_Columns[x].ToString();
 
             for (int y = 0; y < Game.Squares.GetLength(1); y++)
@@ -149,12 +154,13 @@ public class GameManager : Singleton<GameManager>
                     _rows[y].GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
                     _rows[y].GetComponent<RectTransform>().anchoredPosition = new Vector2(size * x + (size / 2), size * y + (size / 2) + offSetY);
                     //Change Image and Number of the objective score
-                    _rows[y].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Line;
+                    _rows[y].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Line;
                     _rows[y].transform.Find("Text").GetComponent<Text>().text = Game.Objective_Rows[y].ToString();
                 }
             }
         }
-        Screen.transform.Find("Background").GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Background;
+
+        Screen.transform.Find("Background").GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Background;
 
         UpdateLinesImage();
     }
@@ -196,7 +202,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (Game.IsGameComplete())
         {
-            AudioManager.Play("GameComplete");
+            AudioManager.Instance.Play("GameComplete");
 
             //---- GET ALL POINT LOCATIONS
             List<Vector2> stars = Game.GetPointsLocation();
@@ -210,7 +216,7 @@ public class GameManager : Singleton<GameManager>
                 if (i + 1 != stars.Count)
                 {
                     //----- Get example and Instantiate with "__StarLines" as parent
-                    _starLines[i] = Instantiate(AssetsManager.StarLine);
+                    _starLines[i] = Instantiate(AssetsManager.Instance.StarLine);
                     _starLines[i].transform.SetParent(parent);
 
                     Vector2 position1 = Vector2.zero;
@@ -236,7 +242,7 @@ public class GameManager : Singleton<GameManager>
                     _starLines[i].GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, (float)angle);
 
                     //----- Set line size
-                    _starLines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(5, Vector2.Distance(position1, position2) / 2);
+                    _starLines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(5, Vector2.Distance(position1, position2));
                 }
             }
         }
@@ -267,23 +273,23 @@ public class GameManager : Singleton<GameManager>
         switch (Game.Squares[(int)position.x, (int)position.y].Type)
         {
             case SquareType.Blank:
-                Button.GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Blank;
+                Button.GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Blank;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.BlackHole:
-                Button.GetComponent<Image>().sprite = AssetsManager.ActiveSkin.BlackHole;
+                Button.GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.BlackHole;
                 SetNoMultiplier(Button);
                 break;
             case SquareType.OnePoint:
-                Button.GetComponent<Image>().sprite = AssetsManager.ActiveSkin.OnePoint;
+                Button.GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.OnePoint;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.TwoPoint:
-                Button.GetComponent<Image>().sprite = AssetsManager.ActiveSkin.TwoPoint;
+                Button.GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.TwoPoint;
                 CheckMultiplier(Button, position);
                 break;
             case SquareType.Multiplier:
-                Button.GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Multiplier;
+                Button.GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Multiplier;
                 Button.transform.Find("MultiplierText").GetComponent<Text>().text = Game.Squares[(int)position.x, (int)position.y].BaseMultiplier + "X";
                 SetNoMultiplier(Button);
                 break;
@@ -299,11 +305,11 @@ public class GameManager : Singleton<GameManager>
     {
         if (Game.CheckRows(y))
         {
-           _rows[y].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.LineCompleted;
+           _rows[y].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.LineCompleted;
         }
         else
         {
-            _rows[y].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Line;
+            _rows[y].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Line;
         }
     }
     /// <summary>
@@ -314,11 +320,11 @@ public class GameManager : Singleton<GameManager>
     {
         if (Game.CheckColumns(x))
         {
-            _columns[x].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.LineCompleted;
+            _columns[x].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.LineCompleted;
         }
         else
         {
-            _columns[x].GetComponent<Image>().sprite = AssetsManager.ActiveSkin.Line;
+            _columns[x].GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.Line;
         }
     }
     /// <summary>
@@ -341,7 +347,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (Game.Squares[(int)position.x, (int)position.y].Multiplier > 1)
         {
-            Button.transform.Find("Image").GetComponent<Image>().sprite = AssetsManager.ActiveSkin.MultiplierOverlay;
+            Button.transform.Find("Image").GetComponent<Image>().sprite = ProfileManager.Instance.ActiveSkin.MultiplierOverlay;
             Button.transform.Find("Image").GetComponent<Image>().color = new Vector4(1, 1, 1, 1);
             Button.transform.Find("Text").GetComponent<Text>().text = Game.Squares[(int)position.x, (int)position.y].Multiplier + "X";
         }
