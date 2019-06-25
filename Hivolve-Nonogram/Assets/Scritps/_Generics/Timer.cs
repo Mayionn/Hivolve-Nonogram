@@ -4,16 +4,33 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    public float BeginTime;
     public Text Text;
+    public bool Began = false;
+    public float BeginTime;
     private float time;
-    private Action actionTimer; 
+    private Action actionTimer;
 
-    public void Update() => actionTimer?.Invoke();
+    public void Update()
+    {
+        if(Began)
+        {
+            if(time < 0)
+            {
+                Began = false;
+                TimeUp();
+                this.Text.text = "0:00:0";
+            }
+            else
+            {
+                Decrement();
+            }
+        }
+    }
 
     public void Begin(float time)
     {
         this.Text.gameObject.SetActive(true);
+        this.Began = true;
         this.BeginTime = time;
         this.time = time;
         this.actionTimer += Decrement;
@@ -30,6 +47,11 @@ public class Timer : MonoBehaviour
     {
         this.Text.gameObject.SetActive(false);
         this.actionTimer -= Decrement;
+    }
+
+    private void TimeUp()
+    {
+        GameManager.Instance.TimeUpWindow();
     }
 
     private void Decrement()

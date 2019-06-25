@@ -35,6 +35,8 @@ public class GameManager : SingletonDestroyable<GameManager>
                 Properties = PropertiesManager.Instance.CustomProperties;
                 break;
             case GameMode.TimeAttack:
+                TimeAttack.Instance.Init();
+                Properties = PropertiesManager.Instance.GetTimeAttackProperties();
                 break;
             default:
                 break;
@@ -56,7 +58,8 @@ public class GameManager : SingletonDestroyable<GameManager>
                 Properties = PropertiesManager.Instance.CustomProperties;
                 break;
             case GameMode.TimeAttack:
-                Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+                TimeAttack.Instance.NextMap();
+                Properties = PropertiesManager.Instance.GetTimeAttackProperties();
                 break;
             default:
                 break;
@@ -270,15 +273,45 @@ public class GameManager : SingletonDestroyable<GameManager>
         }
     }
 
-    private IEnumerator WinWindow()
+    /// <summary>
+    /// Window that appears at the end of each level
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator WinWindow()
     {
+        DisableAllButtons();
+
         ProfileManager.Instance.AddCurrency(PropertiesManager.Instance.CustomMapReward);
+    
+        yield return new WaitForSeconds(1.75f);
 
-        yield return new WaitForSeconds(2f);
+        GenerateNextMap();
+    }
+    /// <summary>
+    /// WIndow that Appears if time's up
+    /// </summary>
+    public void TimeUpWindow()
+    {
+        DisableAllButtons();
 
-        //GenerateNextMap();
+        //INSTANTIATE WINDOW
+
+        Button_LeaveGame();
     }
 
+    /// <summary>
+    /// Disables all buttons interaction
+    /// </summary>
+    private void DisableAllButtons()
+    {
+        for (int x = 0; x < Properties.SizeX; x++)
+        {
+            for (int y = 0; y < Properties.SizeY; y++)
+            {
+                _buttonGrid[x, y].GetComponent<Button>().enabled = false;
+            }
+        }
+    }
     /// <summary>
     /// Updates whole grid's button images, row images and column images
     /// </summary>

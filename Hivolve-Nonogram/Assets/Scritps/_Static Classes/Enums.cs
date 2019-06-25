@@ -32,5 +32,14 @@ public static class Enums
         Endless,
         TimeAttack
     }
+
+    public enum Dificulty
+    {
+        VeryEasy,
+        Easy,
+        Medium,
+        Hard,
+        VeryHard
+    }
   
 }
