@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Enums;
 using static Structs;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : SingletonDestroyable<GameManager>
 {
     public GameGrid Game;
     public Canvas Screen;
@@ -43,13 +44,30 @@ public class GameManager : Singleton<GameManager>
         InstantiateGrid();
     }
 
-    public void Button_TestMapGeneration()
+    public void GenerateNextMap()
     {
         DestroyGrid();
-        Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+
+        switch (PropertiesManager.Instance.GameMode)
+        {
+            case GameMode.Singleplayer:
+                break;
+            case GameMode.Endless:
+                Properties = PropertiesManager.Instance.CustomProperties;
+                break;
+            case GameMode.TimeAttack:
+                Properties = PropertiesManager.Instance.GetRandomGameProperties(5);
+                break;
+            default:
+                break;
+        }
 
         InitGrid();
         InstantiateGrid();
+    }
+    public void Button_LeaveGame()
+    {
+        SceneManager.LoadScene(0);
     }
     public void Button_ResetSquares()
     {
@@ -242,10 +260,23 @@ public class GameManager : Singleton<GameManager>
                     _starLines[i].GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, (float)angle);
 
                     //----- Set line size
-                    _starLines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(5, Vector2.Distance(position1, position2));
+                    float lineThickness = 10;
+                    float distance = Vector2.Distance(position1, position2);
+                    _starLines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(lineThickness, distance + distance / 3);
                 }
             }
+
+            StartCoroutine(WinWindow());
         }
+    }
+
+    private IEnumerator WinWindow()
+    {
+        ProfileManager.Instance.AddCurrency(PropertiesManager.Instance.CustomMapReward);
+
+        yield return new WaitForSeconds(2f);
+
+        //GenerateNextMap();
     }
 
     /// <summary>
@@ -341,7 +372,6 @@ public class GameManager : Singleton<GameManager>
             UpdateRowImage(y);
         }
     }
-
 
     private void CheckMultiplier(GameObject Button, Vector2 position)
     {
