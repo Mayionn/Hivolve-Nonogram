@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 using static Enums;
 
 public static class Structs
@@ -38,5 +39,14 @@ public static class Structs
         [HideInInspector] public Sprite TwoPoint;
         [HideInInspector] public Sprite Multiplier;
         [HideInInspector] public Sprite MultiplierOverlay;
+    }
+
+    [Serializable]
+    public struct InfoTimeAttack
+    {
+        public Text TextTimer;
+        public Text TextTimerIncrement;
+        public Text TextCurrency;
+        public Text TextCurrencyIncrement;
     }
 }

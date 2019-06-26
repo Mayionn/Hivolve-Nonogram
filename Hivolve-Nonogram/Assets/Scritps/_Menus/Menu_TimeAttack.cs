@@ -92,8 +92,8 @@ public class Menu_TimeAttack : MonoBehaviour
     }
     public void StartTimeAttackMode() //BUTTON
     {
-        TimeAttack.Instance.Dificulty = selectedDificulty;
-        PropertiesManager.Instance.GameMode = GameMode.TimeAttack;
+        PropertiesManager.Instance.gameObject.GetComponent<TimeAttack>().Dificulty = selectedDificulty;
+        PropertiesManager.Instance.GameType = GameType.TimeAttack;
         SceneManager.LoadScene("Game");
     }
 

@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4183913705324243656}
   - component: {fileID: 4163927077437774670}
+  - component: {fileID: 6859539290075250809}
+  - component: {fileID: 442456986087682905}
   m_Layer: 0
   m_Name: PropertiesManager
   m_TagString: Untagged
@@ -43,3 +45,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5bb5f8bd56e614f804d2f2ebbc0642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameType: 0
+  CustomMapReward: 0
+  CustomProperties:
+    SizeX: 0
+    SizeY: 0
+    BlackHoles: 0
+    OnePointers: 0
+    TwoPointers: 0
+    Multipliers2X: 0
+    Multipliers3X: 0
+--- !u!114 &6859539290075250809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6086239593243286492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5edf39ea78d1e664ab08c185497a2220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Properties:
+    SizeX: 0
+    SizeY: 0
+    BlackHoles: 0
+    OnePointers: 0
+    TwoPointers: 0
+    Multipliers2X: 0
+    Multipliers3X: 0
+  CurrentStage: 0
+  CurrentGame: 0
+  Dificulty: 0
+--- !u!114 &442456986087682905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6086239593243286492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50cdf65d8a4f38c45acb094fc1ae2bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Properties:
+    SizeX: 0
+    SizeY: 0
+    BlackHoles: 0
+    OnePointers: 0
+    TwoPointers: 0
+    Multipliers2X: 0
+    Multipliers3X: 0

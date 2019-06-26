@@ -122,7 +122,8 @@ public class Menu_EndlessMode : MonoBehaviour
     {
         SetCustomPropertiesValues();
 
-        PropertiesManager.Instance.GameMode = GameMode.Endless;
+        PropertiesManager.Instance.GameType = GameType.Endless;
+
         SceneManager.LoadScene("Game");
     }
 
@@ -145,7 +146,7 @@ public class Menu_EndlessMode : MonoBehaviour
     }
     private void UpdateRewardAmount()
     {
-        RewardAmount.text = PropertiesManager.Instance.GetCustomReward().ToString();
+        RewardAmount.text = PropertiesManager.Instance.GetGameReward(PropertiesManager.Instance.CustomProperties).ToString();
     }
     private void UpdateDropdowns()
     {

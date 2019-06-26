@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using static Structs;
 
 public class Hud : MonoBehaviour
 {
@@ -7,25 +8,15 @@ public class Hud : MonoBehaviour
     public GameObject ResetSquares;
     public GameObject FillSquares;
     public GameObject LeaveGame;
-    public Text Timer;
+
+    public InfoTimeAttack TimeAttack;
 
     public void Init()
     {
         ResetSquares.SetActive(true);
         FillSquares.SetActive(true);
         LeaveGame.SetActive(true);
-
-        switch (PropertiesManager.Instance.GameMode)
-        {
-            case Enums.GameMode.Singleplayer:
-                break;
-            case Enums.GameMode.Endless:
-                Timer.text = System.String.Empty;
-                break;
-            case Enums.GameMode.TimeAttack:
-                break;
-            default:
-                break;
-        }
+        TimeAttack.TextTimer.text = System.String.Empty;
+        TimeAttack.TextCurrency.text = System.String.Empty;
     }
 }

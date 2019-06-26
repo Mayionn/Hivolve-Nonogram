@@ -11,7 +11,7 @@ public class GameManager : SingletonDestroyable<GameManager>
 {
     public GameGrid Game;
     public Canvas Screen;
-    public GameProperties Properties;
+    public GameMode GameMode;
 
     private float screenX;
     private float screenY;
@@ -27,20 +27,20 @@ public class GameManager : SingletonDestroyable<GameManager>
         screenX = Screen.GetComponent<RectTransform>().sizeDelta.x;
         screenY = Screen.GetComponent<RectTransform>().sizeDelta.y;
 
-        switch (PropertiesManager.Instance.GameMode)
+        switch (PropertiesManager.Instance.GameType)
         {
-            case GameMode.Singleplayer:
+            case GameType.Singleplayer:
                 break;
-            case GameMode.Endless:
-                Properties = PropertiesManager.Instance.CustomProperties;
+            case GameType.Endless:
+                GameMode = PropertiesManager.Instance.gameObject.GetComponent<Endless>();
                 break;
-            case GameMode.TimeAttack:
-                TimeAttack.Instance.Init();
-                Properties = PropertiesManager.Instance.GetTimeAttackProperties();
+            case GameType.TimeAttack:
+                GameMode = PropertiesManager.Instance.gameObject.GetComponent<TimeAttack>();
                 break;
             default:
                 break;
         }
+        GameMode.Init();
 
         InitGrid();
         InstantiateGrid();
@@ -50,26 +50,15 @@ public class GameManager : SingletonDestroyable<GameManager>
     {
         DestroyGrid();
 
-        switch (PropertiesManager.Instance.GameMode)
-        {
-            case GameMode.Singleplayer:
-                break;
-            case GameMode.Endless:
-                Properties = PropertiesManager.Instance.CustomProperties;
-                break;
-            case GameMode.TimeAttack:
-                TimeAttack.Instance.NextMap();
-                Properties = PropertiesManager.Instance.GetTimeAttackProperties();
-                break;
-            default:
-                break;
-        }
+        GameMode.SetMapProperties();
 
         InitGrid();
         InstantiateGrid();
     }
     public void Button_LeaveGame()
     {
+        GameMode.LeaveGame();
+
         SceneManager.LoadScene(0);
     }
     public void Button_ResetSquares()
@@ -116,10 +105,10 @@ public class GameManager : SingletonDestroyable<GameManager>
     /// </summary>
     private void InitGrid()
     {
-        Game = new GameGrid(Properties);
-        _buttonGrid = new GameObject[Properties.SizeX, Properties.SizeY];
-        _rows = new GameObject[Properties.SizeY];
-        _columns = new GameObject[Properties.SizeX];
+        Game = new GameGrid(GameMode.Properties);
+        _buttonGrid = new GameObject[GameMode.Properties.SizeX, GameMode.Properties.SizeY];
+        _rows = new GameObject[GameMode.Properties.SizeY];
+        _columns = new GameObject[GameMode.Properties.SizeX];
     }
     /// <summary>
     /// Instantiates grid to screen
@@ -215,7 +204,6 @@ public class GameManager : SingletonDestroyable<GameManager>
             }
         }
     }
-
     /// <summary>
     /// Verifies if all objectives have been achieved, and executes win animations
     /// </summary>
@@ -269,44 +257,40 @@ public class GameManager : SingletonDestroyable<GameManager>
                 }
             }
 
-            StartCoroutine(WinWindow());
+            DisableAllButtons();
+
+            StartCoroutine(GameMode.MapCompletion());
         }
     }
 
-    /// <summary>
-    /// Window that appears at the end of each level
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator WinWindow()
+    public void FadeOutUI()
     {
-        DisableAllButtons();
+        for (int x = 0; x < GameMode.Properties.SizeX; x++)
+        {
+            for (int y = 0; y < GameMode.Properties.SizeY; y++)
+            {
+                _buttonGrid[x, y].GetComponent<Animation>().Play("ButtonFadeOut");
+            }
+        }
 
-        ProfileManager.Instance.AddCurrency(PropertiesManager.Instance.CustomMapReward);
-    
-        yield return new WaitForSeconds(1.75f);
+        for (int i = 0; i < _rows.Length; i++)
+        {
+            _rows[i].GetComponent<Animation>().Play("LineSquareFadeOut");
+        }
 
-        GenerateNextMap();
+        for (int i = 0; i < _columns.Length; i++)
+        {
+            _columns[i].GetComponent<Animation>().Play("LineSquareFadeOut");
+        }
     }
-    /// <summary>
-    /// WIndow that Appears if time's up
-    /// </summary>
-    public void TimeUpWindow()
-    {
-        DisableAllButtons();
-
-        //INSTANTIATE WINDOW
-
-        Button_LeaveGame();
-    }
-
     /// <summary>
     /// Disables all buttons interaction
     /// </summary>
-    private void DisableAllButtons()
+    public void DisableAllButtons()
     {
-        for (int x = 0; x < Properties.SizeX; x++)
+        for (int x = 0; x < GameMode.Properties.SizeX; x++)
         {
-            for (int y = 0; y < Properties.SizeY; y++)
+            for (int y = 0; y < GameMode.Properties.SizeY; y++)
             {
                 _buttonGrid[x, y].GetComponent<Button>().enabled = false;
             }
@@ -396,11 +380,11 @@ public class GameManager : SingletonDestroyable<GameManager>
     /// </summary>
     private void UpdateLinesImage()
     {
-        for (int x = 0; x < Properties.SizeX; x++)
+        for (int x = 0; x < GameMode.Properties.SizeX; x++)
         {
             UpdateColumnImage(x);
         }
-        for (int y = 0; y < Properties.SizeY; y++)
+        for (int y = 0; y < GameMode.Properties.SizeY; y++)
         {
             UpdateRowImage(y);
         }
@@ -421,7 +405,7 @@ public class GameManager : SingletonDestroyable<GameManager>
     }
     private void SetNoMultiplier(GameObject Button)
     {
-        Button.transform.Find("Image").GetComponent<Image>().sprite = null;
+        //Button.transform.Find("Image").GetComponent<Image>().sprite = null;
         Button.transform.Find("Image").GetComponent<Image>().color = Color.clear;
         Button.transform.Find("Text").GetComponent<Text>().text = "";
     }

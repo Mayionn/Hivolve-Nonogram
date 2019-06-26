@@ -5,7 +5,7 @@ using static Structs;
 
 public class PropertiesManager : Singleton<PropertiesManager>
 {
-    public GameMode GameMode;
+    public GameType GameType;
 
     //----- Endless Mode
     public int CustomMapReward;
@@ -30,33 +30,7 @@ public class PropertiesManager : Singleton<PropertiesManager>
         return gp;
     }
 
-    #region ----- Endless Mode Methods
-    public int GetCustomReward()
-    {
-        float rewardAmount = 0;
-        int value;
-
-        int smallStarReward = 1;
-        int bigStarReward = 1;
-        int blackHolesReward = 1;
-        int multiplier2XReward = 2;
-        int multiplier3XReward = 2;
-
-        value = Array.IndexOf(Enum.GetValues(CustomProperties.OnePointers.GetType()), CustomProperties.OnePointers);
-        rewardAmount += value * smallStarReward;
-        value = Array.IndexOf(Enum.GetValues(CustomProperties.TwoPointers.GetType()), CustomProperties.TwoPointers);
-        rewardAmount += value * bigStarReward;
-        value = Array.IndexOf(Enum.GetValues(CustomProperties.BlackHoles.GetType()), CustomProperties.BlackHoles);
-        rewardAmount += value * blackHolesReward;
-        value = Array.IndexOf(Enum.GetValues(CustomProperties.Multipliers2X.GetType()), CustomProperties.Multipliers2X);
-        rewardAmount += value * multiplier2XReward;
-        value = Array.IndexOf(Enum.GetValues(CustomProperties.Multipliers3X.GetType()), CustomProperties.Multipliers3X);
-        rewardAmount += value * multiplier3XReward;
-
-        rewardAmount *= ((CustomProperties.SizeX / 2f) + 1);
-
-        return (int)rewardAmount;
-    }
+    //----- Endless mode
     public void SetCustomProperties(int size, Density smallStars, Density bigStars, Density blackHoles, Count multipliers2X, Count multipliers3X)
     {
         CustomProperties = new GameProperties
@@ -70,22 +44,21 @@ public class PropertiesManager : Singleton<PropertiesManager>
             Multipliers3X = multipliers3X
         };
 
-        CustomMapReward = GetCustomReward();
+        CustomMapReward = GetGameReward(CustomProperties);
     }
-    #endregion
 
-    #region ----- Time Attack Methods
-
+    //----- Time attack
     public GameProperties GetTimeAttackProperties()
     {
-        int size = TimeAttack.Instance.CurrentStage + 2;
+        TimeAttack tm = GameManager.Instance.GameMode as TimeAttack;
+        int size = tm.CurrentStage + 2;
         Density onePointers = new Density();
         Density twoPointers = new Density();
         Density blackHoles = new Density();
         Count multipliers2X = new Count();
         Count multipliers3X = new Count();
 
-        switch (TimeAttack.Instance.Dificulty)
+        switch (tm.Dificulty)
         {
             case Dificulty.VeryEasy:
                 #region VeryEasy
@@ -245,8 +218,32 @@ public class PropertiesManager : Singleton<PropertiesManager>
         return go;
     }
 
+    public int GetGameReward(GameProperties prop)
+    {
+        float rewardAmount = 0;
+        int value;
 
-    #endregion
+        int smallStarReward = 1;
+        int bigStarReward = 1;
+        int blackHolesReward = 1;
+        int multiplier2XReward = 2;
+        int multiplier3XReward = 2;
+
+        value = Array.IndexOf(Enum.GetValues(prop.OnePointers.GetType()), prop.OnePointers);
+        rewardAmount += value * smallStarReward;
+        value = Array.IndexOf(Enum.GetValues(prop.TwoPointers.GetType()), prop.TwoPointers);
+        rewardAmount += value * bigStarReward;
+        value = Array.IndexOf(Enum.GetValues(prop.BlackHoles.GetType()), prop.BlackHoles);
+        rewardAmount += value * blackHolesReward;
+        value = Array.IndexOf(Enum.GetValues(prop.Multipliers2X.GetType()), prop.Multipliers2X);
+        rewardAmount += value * multiplier2XReward;
+        value = Array.IndexOf(Enum.GetValues(prop.Multipliers3X.GetType()), prop.Multipliers3X);
+        rewardAmount += value * multiplier3XReward;
+
+        rewardAmount *= ((prop.SizeX / 2f) + 1);
+
+        return (int)rewardAmount;
+    }
 
     private static object GetRandomValue(int begin, Array someEnum)
     {

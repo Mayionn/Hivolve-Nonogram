@@ -26,7 +26,7 @@ public static class Enums
         Multiplier
     }
 
-    public enum GameMode
+    public enum GameType
     {
         Singleplayer,
         Endless,

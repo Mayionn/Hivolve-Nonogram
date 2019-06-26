@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Structs;
 
 public class UIManager : SingletonDestroyable<UIManager>
 {
@@ -41,8 +42,8 @@ public class UIManager : SingletonDestroyable<UIManager>
         timeAttackMode.Init();
     }
 
-    public Text GetTimer()
+    public InfoTimeAttack GetTimeAttackInfo()
     {
-        return gameHud.Timer;
+        return gameHud.TimeAttack;
     }
 }
