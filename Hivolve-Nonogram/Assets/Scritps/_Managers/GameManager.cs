@@ -20,6 +20,14 @@ public class GameManager : SingletonDestroyable<GameManager>
     private GameObject[] _columns;
     private GameObject[] _starLines;
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            GenerateNextMap();
+        }
+    }
+
     void Start()
     {
         AssetsManager.Instance.Init();

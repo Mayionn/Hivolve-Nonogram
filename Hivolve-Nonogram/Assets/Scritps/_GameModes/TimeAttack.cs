@@ -31,7 +31,7 @@ public class TimeAttack : GameMode
         Properties = PropertiesManager.Instance.GetTimeAttackProperties();
 
         UI = UIManager.Instance.GetTimeAttackInfo();
-        UI.TextCurrency.text = "0";
+        //UI.TextCurrency.text = "0";
 
         actionTimer += CheckTime;
         //----- Start Timer
@@ -61,8 +61,8 @@ public class TimeAttack : GameMode
         //----- Play Increment time animation:
         UI.TextTimerIncrement.GetComponent<Animation>().Play("TimeIncrement");
         //----- Play Increment currency animation:
-        UI.TextCurrencyIncrement.text = "+" + PropertiesManager.Instance.GetGameReward(Properties).ToString();
-        UI.TextCurrencyIncrement.GetComponent<Animation>().Play("CurrencyIncrement");
+        //UI.TextCurrencyIncrement.text = "+" + PropertiesManager.Instance.GetGameReward(Properties).ToString();
+        //UI.TextCurrencyIncrement.GetComponent<Animation>().Play("CurrencyIncrement");
         //Fadeout all Sqares
         GameManager.Instance.FadeOutUI();
 
@@ -72,13 +72,12 @@ public class TimeAttack : GameMode
 
         //----- Add currency:
         currencyEarned += PropertiesManager.Instance.GetGameReward(Properties);
-        UI.TextCurrency.text = currencyEarned.ToString();
+        //UI.TextCurrency.text = currencyEarned.ToString();
         //----- Resume Timer:
         Resume();
         //----- StartNextMap:
         GameManager.Instance.GenerateNextMap();
     }
-
 
     private void Update()
     {

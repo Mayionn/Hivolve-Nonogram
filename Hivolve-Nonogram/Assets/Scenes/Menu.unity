@@ -400,7 +400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &64272133
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1140,8 +1140,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -237}
-  m_SizeDelta: {x: 705.4, y: 198.3}
+  m_AnchoredPosition: {x: 39.8, y: -392}
+  m_SizeDelta: {x: 633.8, y: 342.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &226188178
 MonoBehaviour:
@@ -3283,7 +3283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &543954529
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3420,8 +3420,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 527}
-  m_SizeDelta: {x: 506.7, y: 219.4}
+  m_AnchoredPosition: {x: 0, y: 375}
+  m_SizeDelta: {x: 1030.6, y: 446.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &544395710
 MonoBehaviour:
@@ -3456,7 +3456,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: NONOGRAM
+  m_Text: Hi-Nonogram
 --- !u!222 &544395711
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5604,7 +5604,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1014981207
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8029,6 +8029,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5136592892958200753, guid: c9590181896058144bd084abd150329f,
+        type: 3}
+      propertyPath: Skins.Array.data[0].Spritesheet
+      value: 
+      objectReference: {fileID: 2800000, guid: a62aac2e39ed36d4687d88797de5f016, type: 3}
+    - target: {fileID: 5136592892958200753, guid: c9590181896058144bd084abd150329f,
+        type: 3}
+      propertyPath: Skins.Array.data[0].Background
+      value: 
+      objectReference: {fileID: 21300000, guid: 2bfd92343f299694b8af96e238972b27,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9590181896058144bd084abd150329f, type: 3}
 --- !u!1 &1645679928
@@ -10015,8 +10026,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: 28}
-  m_SizeDelta: {x: 705.4, y: 198.3}
+  m_AnchoredPosition: {x: 39.800003, y: 65.19998}
+  m_SizeDelta: {x: 633.8, y: 342.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1967048749
 MonoBehaviour:
