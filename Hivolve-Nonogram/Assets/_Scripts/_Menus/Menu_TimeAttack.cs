@@ -15,6 +15,9 @@ public class Menu_TimeAttack : MonoBehaviour
     public Button Hard;
     public Button VeryHard;
 
+    public Sprite unfilled;         //Sprite changes to unfilled if not selected
+    public Sprite filled;           //Sprite changes to filled if selected
+
     private int selectedButton;
     private Dificulty selectedDificulty;
 
@@ -23,9 +26,8 @@ public class Menu_TimeAttack : MonoBehaviour
         UI.SetActive(true);
 
         selectedDificulty = Dificulty.VeryEasy;
-        VeryEasy.image.color = new Color(1, 0, 0);
+        VeryEasy.image.sprite = filled;
         selectedButton = 0;
-
     }
 
     public void ButtonPressed(int index)
@@ -35,19 +37,19 @@ public class Menu_TimeAttack : MonoBehaviour
             switch (selectedButton)
             {
                 case 0:
-                    VeryEasy.image.color = new Color(1, 1, 1);
+                    VeryEasy.image.sprite = unfilled;
                     break;
                 case 1:
-                    Easy.image.color = new Color(1, 1, 1);
+                    Easy.image.sprite = unfilled;
                     break;
                 case 2:
-                    Medium.image.color = new Color(1, 1, 1);
+                    Medium.image.sprite = unfilled;
                     break;
                 case 3:
-                    Hard.image.color = new Color(1, 1, 1);
+                    Hard.image.sprite = unfilled;
                     break;
                 case 4:
-                    VeryHard.image.color = new Color(1, 1, 1);
+                    VeryHard.image.sprite = unfilled;
                     break;
                 default:
                     break;
@@ -56,27 +58,27 @@ public class Menu_TimeAttack : MonoBehaviour
             {
                 case 0:
                     selectedButton = 0;
-                    VeryEasy.image.color = new Color(1, 0, 0);
+                    VeryEasy.image.sprite = filled;
                     selectedDificulty = Dificulty.VeryEasy;
                     break;
                 case 1:
                     selectedButton = 1;
-                    Easy.image.color = new Color(1, 0, 0);
+                    Easy.image.sprite = filled;
                     selectedDificulty = Dificulty.Easy;
                     break;
                 case 2:
                     selectedButton = 2;
-                    Medium.image.color = new Color(1, 0, 0);
+                    Medium.image.sprite = filled;
                     selectedDificulty = Dificulty.Medium;
                     break;
                 case 3:
                     selectedButton = 3;
-                    Hard.image.color = new Color(1, 0, 0);
+                    Hard.image.sprite = filled;
                     selectedDificulty = Dificulty.Hard;
                     break;
                 case 4:
                     selectedButton = 4;
-                    VeryHard.image.color = new Color(1, 0, 0);
+                    VeryHard.image.sprite = filled;
                     selectedDificulty = Dificulty.VeryHard;
                     break;
                 default:
